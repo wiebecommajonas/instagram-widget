@@ -13,7 +13,7 @@ widgetParameter = username
 ```
 The medium widget shows random recent pictures.
 
-### Large Widget
+## Large Widget
 ```
 widgetParameter = username
 ```
