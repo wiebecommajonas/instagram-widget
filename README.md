@@ -1,5 +1,5 @@
 # Instagram Widget
-This is a widget for instagram...
+This is a widget for instagram... This README will be updated soon
 
 ## Small Widget
 ```
