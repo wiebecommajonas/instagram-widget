@@ -4,12 +4,14 @@ This is a widget for instagram...
 ## Small Widget
 ```
 widgetParameter = username
-```The small widget is for viewing current followers and media count.
+```
+The small widget is for viewing current followers and media count.
 
 ## Medium Widget
 ```
 widgetParameter = username
-```The medium widget shows random recent pictures.
+```
+The medium widget shows random recent pictures.
 
 ### Large Widget
 ```
