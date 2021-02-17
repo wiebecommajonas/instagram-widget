@@ -52,10 +52,14 @@ To get this widget to work copy the contents of [Instagram Widget.js](Instagram%
 To get this widget to work copy the contents of [Instagram Widget.js](Instagram\ Widget.js), create a new widget in Scriptable and paste the copied code. Then add a Scriptable widget to your home screen (all sizes are supported, check the [examples](#examples) to find wich size suits your needs).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Instructions](img/instructions.jpg | width=100)
 >>>>>>> f2391b8 (resize images)
 =======
 <img src="img/instructions.jpg" width="100">
+=======
+<img src="img/instructions.jpg" width="250">
+>>>>>>> 37dd5f7 (resize images again)
 <!--![Instructions](img/instructions.jpg)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -74,6 +78,7 @@ After adding the widget to your homescreen you will have to set the script and t
 parameter = username
 ```
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -100,6 +105,9 @@ parameter = username
 >>>>>>> f2391b8 (resize images)
 =======
 <img src="img/small.PNG" width="100">
+=======
+<img src="img/small.PNG" width="250">
+>>>>>>> 37dd5f7 (resize images again)
 <!--![Small Widget](img/small.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -110,6 +118,7 @@ The small widget is for viewing current followers and media count.
 parameter = username
 ```
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -136,6 +145,9 @@ parameter = username
 >>>>>>> f2391b8 (resize images)
 =======
 <img src="img/medium.PNG" width="100">
+=======
+<img src="img/medium.PNG" width="250">
+>>>>>>> 37dd5f7 (resize images again)
 <!--![Medium Widget](img/medium.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -146,6 +158,7 @@ The medium widget shows random recent pictures.
 parameter = username
 ```
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -172,6 +185,9 @@ parameter = username
 >>>>>>> f2391b8 (resize images)
 =======
 <img src="img/large.PNG" width="100">
+=======
+<img src="img/large.PNG" width="250">
+>>>>>>> 37dd5f7 (resize images again)
 <!--![Large Widget](img/large.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
