@@ -6,7 +6,7 @@ With the Instagram Widget you can customise your homescreen to show your profile
 
 To get this widget to work copy the contents of [Instagram Widget.js](Instagram\ Widget.js), create a new widget in Scriptable and paste the copied code. Then add a Scriptable widget to your home screen (all sizes are supported, check the [examples](#examples) to find wich size suits your needs).
 
-<img src="img/instructions.jpg" width="100">
+<img src="img/instructions.jpg" width="250">
 <!--![Instructions](img/instructions.jpg)-->
 
 After adding the widget to your homescreen you will have to set the script and the widget parameter. The script has to be the one you caopied all the code into and the parameter needs to be a valid instagram username.
@@ -24,7 +24,7 @@ After adding the widget to your homescreen you will have to set the script and t
 parameter = username
 ```
 
-<img src="img/small.PNG" width="100">
+<img src="img/small.PNG" width="250">
 <!--![Small Widget](img/small.PNG)-->
 
 The small widget is for viewing current followers and media count.
@@ -34,7 +34,7 @@ The small widget is for viewing current followers and media count.
 parameter = username
 ```
 
-<img src="img/medium.PNG" width="100">
+<img src="img/medium.PNG" width="250">
 <!--![Medium Widget](img/medium.PNG)-->
 
 The medium widget shows random recent pictures.
@@ -44,7 +44,7 @@ The medium widget shows random recent pictures.
 parameter = username
 ```
 
-<img src="img/large.PNG" width="100">
+<img src="img/large.PNG" width="250">
 <!--![Large Widget](img/large.PNG)-->
 
 As the widgets are updated, the fetched profile data is logged into files (iCloud/Scriptable/IGWidget/Logs). This widget shows the growth/change of your/the users follower count over time (last 24h).
