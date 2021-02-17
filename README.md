@@ -4,7 +4,7 @@ With the Instagram Widget you can customise your homescreen to show your profile
 
 ## Instructions
 
-To get this widget to work copy the contents of [Instagram Widget.js](./Instagram Widget.js), create a new widget in Scriptable and paste the copied code. Then add a Scriptable widget to your home screen (all sizes are supported, check the [examples](#examples) to find wich size suits your needs).
+To get this widget to work copy the contents of [Instagram Widget.js]("Instagram Widget.js"), create a new widget in Scriptable and paste the copied code. Then add a Scriptable widget to your home screen (all sizes are supported, check the [examples](#examples) to find wich size suits your needs).
 
 <img src="img/instructions.jpg" width="300">
 <!--![Instructions](img/instructions.jpg)-->
