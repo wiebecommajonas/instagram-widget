@@ -8,6 +8,7 @@ To get this widget to work copy the contents of [Instagram Widget.js](Instagram%
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <img src="img/instructions.jpg" width="300">
 <!--![Instructions](img/instructions.jpg)-->
 =======
@@ -15,6 +16,9 @@ To get this widget to work copy the contents of [Instagram Widget.js](Instagram%
 >>>>>>> f2391b8 (resize images)
 =======
 <img src="img/instructions.jpg" width="100">
+=======
+<img src="img/instructions.jpg" width="250">
+>>>>>>> 37dd5f7 (resize images again)
 <!--![Instructions](img/instructions.jpg)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -35,6 +39,7 @@ parameter = username
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <img src="img/small.PNG" width="300">
 <!--![Small Widget](img/small.PNG)-->
 =======
@@ -42,6 +47,9 @@ parameter = username
 >>>>>>> f2391b8 (resize images)
 =======
 <img src="img/small.PNG" width="100">
+=======
+<img src="img/small.PNG" width="250">
+>>>>>>> 37dd5f7 (resize images again)
 <!--![Small Widget](img/small.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -54,6 +62,7 @@ parameter = username
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <img src="img/medium.PNG" width="300">
 <!--![Medium Widget](img/medium.PNG)-->
 =======
@@ -61,6 +70,9 @@ parameter = username
 >>>>>>> f2391b8 (resize images)
 =======
 <img src="img/medium.PNG" width="100">
+=======
+<img src="img/medium.PNG" width="250">
+>>>>>>> 37dd5f7 (resize images again)
 <!--![Medium Widget](img/medium.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -73,6 +85,7 @@ parameter = username
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <img src="img/large.PNG" width="300">
 <!--![Large Widget](img/large.PNG)-->
 =======
@@ -80,6 +93,9 @@ parameter = username
 >>>>>>> f2391b8 (resize images)
 =======
 <img src="img/large.PNG" width="100">
+=======
+<img src="img/large.PNG" width="250">
+>>>>>>> 37dd5f7 (resize images again)
 <!--![Large Widget](img/large.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
