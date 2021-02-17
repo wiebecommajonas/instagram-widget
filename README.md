@@ -4,6 +4,7 @@ With the Instagram Widget you can customise your homescreen to show your profile
 
 ## Instructions
 
+<<<<<<< HEAD
 To get this widget to work copy the contents of [Instagram Widget.js](Instagram%20Widget.js), create a new widget in Scriptable and paste the copied code. Then add a Scriptable widget to your home screen (all sizes are supported, check the [examples](#examples) to find wich size suits your needs).
 
 <<<<<<< HEAD
@@ -19,6 +20,11 @@ To get this widget to work copy the contents of [Instagram Widget.js](Instagram%
 =======
 <img src="img/instructions.jpg" width="250">
 >>>>>>> 37dd5f7 (resize images again)
+=======
+To get this widget to work copy the contents of [Instagram Widget.js](Instagram Widget.js), create a new widget in Scriptable and paste the copied code. Then add a Scriptable widget to your home screen (all sizes are supported, check the [examples](#examples) to find wich size suits your needs).
+
+<img src="img/instructions.jpg" width="300">
+>>>>>>> 8f90ad8 (Fix error in README.md)
 <!--![Instructions](img/instructions.jpg)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -40,6 +46,7 @@ parameter = username
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <img src="img/small.PNG" width="300">
 <!--![Small Widget](img/small.PNG)-->
 =======
@@ -50,6 +57,9 @@ parameter = username
 =======
 <img src="img/small.PNG" width="250">
 >>>>>>> 37dd5f7 (resize images again)
+=======
+<img src="img/small.PNG" width="300">
+>>>>>>> 8f90ad8 (Fix error in README.md)
 <!--![Small Widget](img/small.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -63,6 +73,7 @@ parameter = username
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <img src="img/medium.PNG" width="300">
 <!--![Medium Widget](img/medium.PNG)-->
 =======
@@ -73,6 +84,9 @@ parameter = username
 =======
 <img src="img/medium.PNG" width="250">
 >>>>>>> 37dd5f7 (resize images again)
+=======
+<img src="img/medium.PNG" width="300">
+>>>>>>> 8f90ad8 (Fix error in README.md)
 <!--![Medium Widget](img/medium.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
@@ -86,6 +100,7 @@ parameter = username
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <img src="img/large.PNG" width="300">
 <!--![Large Widget](img/large.PNG)-->
 =======
@@ -96,6 +111,9 @@ parameter = username
 =======
 <img src="img/large.PNG" width="250">
 >>>>>>> 37dd5f7 (resize images again)
+=======
+<img src="img/large.PNG" width="300">
+>>>>>>> 8f90ad8 (Fix error in README.md)
 <!--![Large Widget](img/large.PNG)-->
 >>>>>>> 885dda4 (resize images)
 
