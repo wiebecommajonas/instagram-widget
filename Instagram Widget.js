@@ -31,11 +31,13 @@ const igWidget = {
 		this.fm = iCloudInUse ? FileManager.iCloud() : FileManager.local()
 		this.root = this.fm.documentsDirectory() + '/IGWidget'
 		this.cachePath = this.root + '/cache.json'
+		this.settingsPath = this.root + '/settings.json'
 		this.profileCachePath = this.root + `/Profiles/${this.username}.cache`
 		this.imageCachePath = this.root + `/Profiles/${this.username}_img.cache`
 		this.logPath = this.root + `/Logs/${this.username}.log`
 		this.images = undefined
 		this.user = undefined
+		this.settings = undefined
 		this.sessionid = undefined
 	},
 
@@ -96,6 +98,15 @@ const igWidget = {
 		await this.writeJSONTo(this.images, this.imageCachePath)
 		return this.user
 	},
+	
+	async fetchDefaultSettings() {
+		const url = 'https://raw.githubusercontent.com/wiebecommajonas/instagram-widget/master/default-settings.json'
+		let req = new Request(url)
+		let json = await req.loadJSON()
+		this.settings = json
+		await this.writeJSONTo(json, this.settingsPath)
+		return json
+	},
 
 	getProfileInfo() {
 		let result = {
@@ -123,14 +134,18 @@ const igWidget = {
 			1: 10,
 			2: 15,
 			3: 20,
-			4: 25,
-			5: 30,
+			4: 30,
+			5: 35,
 			6: 40,
 			7: 40,
 			8: 45,
 			9: 50,
 			10: 55
 		}
+	},
+	
+	formatNumber(number) {
+		return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, this.settings.General['Thousands separator']);
 	},
 
 	async getJSONFrom(path) {
@@ -231,7 +246,7 @@ const igWidget = {
 		var followerCountRow = widgetRows.addStack()
 		followerCountRow.layoutHorizontally()
 		followerCountRow.addSpacer()
-		var followerCount = followerCountRow.addText(`${user.followers}`)
+		var followerCount = followerCountRow.addText(`${this.formatNumber(user.followers)}`)
 		formatText(followerCount, Font.heavyRoundedSystemFont(20))
 		followerCountRow.addSpacer()
 		followerCountRow.setPadding(0, 0, -3, 0)
@@ -247,7 +262,7 @@ const igWidget = {
 		var mediaCountRow = widgetRows.addStack()
 		mediaCountRow.layoutHorizontally()
 		mediaCountRow.addSpacer()
-		var mediaCount = mediaCountRow.addText(`${user.media_count}`)
+		var mediaCount = mediaCountRow.addText(`${this.formatNumber(user.media_count)}`)
 		formatText(mediaCount, Font.heavyRoundedSystemFont(20))
 		mediaCountRow.addSpacer()
 		mediaCountRow.setPadding(0, 0, -3, 0)
@@ -291,13 +306,14 @@ const igWidget = {
 		imagesRow.layoutHorizontally()
 		imagesRow.addSpacer()
 		let square = (Device.screenSize().height < Device.screenSize().width) ? Device.screenSize().height : Device.screenSize().width
-		square = square/4
+		square = square/4.3
 		for (i=0; i < randomImages.length; i++) {
 			var rect = imagesRow.addStack()
-			rect.size = new Size (square,square)
+			if (this.settings.Medium['Picture geometry'] == 'square') rect.size = new Size (square,square)
 			var wImage = rect.addImage(randomImages[i])
 			wImage.applyFillingContentMode()
-			if (i != randomImages.length - 1) {imagesRow.addSpacer()}
+			let space = (this.settings.Medium['Picture spacing'] == 'auto') ? null : parseInt(this.settings.Medium['Picture spacing'])
+			if (i != randomImages.length - 1) {imagesRow.addSpacer(space)}
 			//wImage.imageSize = new Size(100,100)
 		}
 		imagesRow.addSpacer()
@@ -324,7 +340,9 @@ const igWidget = {
 			image.cornerRadius = 12
 			usernameRow.addSpacer(3)
 		}
-		var usernameText = usernameRow.addText(`${user.username} | Followers`)
+		let dataPoint = this.settings.Large['Display data']
+		let label = (dataPoint == 'media_count') ? 'Media count' : dataPoint.replace(/^\w/, (c) => c.toUpperCase())
+		var usernameText = usernameRow.addText(`${user.username} | ${label}`)
 		usernameText.font = Font.boldRoundedSystemFont(12)
 		usernameRow.addSpacer()
 		usernameRow.setPadding(0, 0, 15, 0)
@@ -333,10 +351,27 @@ const igWidget = {
 		var log = await this.getJSONFrom(this.logPath)
 		var xsRaw = []
 		var ysRaw = []
+		let timeRange
+		switch (this.settings.Large['Time range']) {
+			case 'last 24h':
+				timeRange = 24
+				break
+			case 'last week':
+				timeRange = 24*7
+				break
+			case 'all time':
+			default:
+				timeRange = -1
+				break
+		}
+		
 		for (let entry in log) {
-			if (entry >= Date.now() - 24*60*60*1000) {
+			if (timeRange && (entry >= Date.now() - timeRange*60*60*1000)) {
 				xsRaw.push(parseInt(entry))
-				ysRaw.push(log[entry].followers)
+				ysRaw.push(log[entry][dataPoint])
+			} else if (timeRange === -1) {
+				xsRaw.push(parseInt(entry))
+				ysRaw.push(log[entry][dataPoint])
 			}
 		}
 		var maxX = Math.max(...xsRaw)
@@ -387,8 +422,8 @@ const igWidget = {
 		drawing.setFont(Font.regularRoundedSystemFont(8))
 		drawing.setTextColor(axisColor)
 		drawing.setTextAlignedRight()
-		drawing.drawTextInRect(`${maxY}`, new Rect(0,0,leftPadding-5,8))
-		drawing.drawTextInRect(`${minY}`, new Rect(0,axisMax-bottomPadding-8,leftPadding-5,8))
+		drawing.drawTextInRect(`${this.formatNumber(maxY)}`, new Rect(0,0,leftPadding-5,8))
+		drawing.drawTextInRect(`${this.formatNumber(minY)}`, new Rect(0,axisMax-bottomPadding-8,leftPadding-5,8))
 		drawing.setTextAlignedCenter()
 		let dateTimeMin = new Date(minX).toLocaleString(Device.locale().replace('_','-')).split(', ')
 		let dateTimeMax = new Date(maxX).toLocaleString(Device.locale().replace('_','-')).split(', ')
@@ -415,6 +450,11 @@ igWidget.sessionid = sessionCache.sessionid
 var userCache = await igWidget.getJSONFrom(igWidget.profileCachePath)
 if (!userCache || new Date() >= new Date(userCache.last_updated + 60*60*1000)) { console.log('Refreshing user cache'); userCache = await igWidget.fetchData() }
 igWidget.user = userCache
+
+igWidget.settings = await igWidget.getJSONFrom(igWidget.settingsPath)
+if (!igWidget.settings) {
+	await igWidget.fetchDefaultSettings()
+}
 
 if (config.runsInApp) {
 	let a = await showAlert('Show Widget', 'Which widget do you want to show?', ['small', 'medium', 'large'])
