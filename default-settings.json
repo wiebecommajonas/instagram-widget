@@ -1,0 +1,13 @@
+{
+	"Small": {
+		"Thousands separator": ","
+	},
+	"Medium": {
+		"Picture spacing": "auto",
+		"Picture geometry": "square"
+	},
+	"Large": {
+		"Time range": "last 24h",
+		"Display data": "followers"
+	}
+}
