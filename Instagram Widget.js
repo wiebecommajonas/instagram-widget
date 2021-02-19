@@ -117,6 +117,21 @@ const igWidget = {
 		}
 		return result
 	},
+	
+	getGraphPadding() {
+		return {
+			1: 10,
+			2: 15,
+			3: 20,
+			4: 25,
+			5: 30,
+			6: 40,
+			7: 40,
+			8: 45,
+			9: 50,
+			10: 55
+		}
+	},
 
 	async getJSONFrom(path) {
 		if (this.fm.fileExists(path)) {
@@ -309,29 +324,37 @@ const igWidget = {
 			image.cornerRadius = 12
 			usernameRow.addSpacer(3)
 		}
-		var usernameText = usernameRow.addText(`${user.username}`)
+		var usernameText = usernameRow.addText(`${user.username} | Followers`)
 		usernameText.font = Font.boldRoundedSystemFont(12)
 		usernameRow.addSpacer()
 		usernameRow.setPadding(0, 0, 15, 0)
 		usernameRow.centerAlignContent()
 		
 		var log = await this.getJSONFrom(this.logPath)
-		var xs = []
-		var ys = []
+		var xsRaw = []
+		var ysRaw = []
 		for (let entry in log) {
 			if (entry >= Date.now() - 24*60*60*1000) {
-				xs.push(parseInt(entry))
-				ys.push(log[entry].followers)
+				xsRaw.push(parseInt(entry))
+				ysRaw.push(log[entry].followers)
 			}
 		}
-		var maxX = Math.max(...xs)
-		var minX = Math.min(...xs)
-		var maxY = Math.max(...ys)
-		var minY = Math.min(...ys)
+		var maxX = Math.max(...xsRaw)
+		var minX = Math.min(...xsRaw)
+		var maxY = Math.max(...ysRaw)
+		var minY = Math.min(...ysRaw)
+		
+		const axisMax = 300
+		const bottomPadding = 25
+		const rightPadding = 20
+		const leftPadding = this.getGraphPadding()[`${maxY}`.length]
+		
+		var xs = [...xsRaw]
+		var ys = [...ysRaw]
 		
 		for (i=0; i < xs.length; i++) { // xs & ys are same length
-			xs[i] = range(minX, maxX, 1, 199, xs[i])
-			ys[i] = (minY == maxY) ? 100 : range(minY, maxY, 199, 1, ys[i])
+			xs[i] = range(minX, maxX, leftPadding, axisMax-rightPadding, xsRaw[i])
+			ys[i] = (minY == maxY) ? 100 : range(minY, maxY, axisMax-bottomPadding, 0, ysRaw[i])
 		}
 		var points = []
 		for (i=0; i < xs.length ; i++) { // xs & ys still same length
@@ -345,21 +368,36 @@ const igWidget = {
 		var drawing = new DrawContext()
 		drawing.opaque = false
 		drawing.respectScreenScale = true
+		drawing.size = new Size(300,300)
 		var graph = new Path()
 		graph.addLines(points)
 		drawing.addPath(graph)
-		drawing.setStrokeColor(new Color('#0000ff'))
+		let graphColor = Color.dynamic(new Color('#0000ff'), new Color('#ff0000'))
+		drawing.setStrokeColor(graphColor)
 		drawing.setLineWidth(0.5)
 		drawing.strokePath()
 		var path = new Path()
-		path.addLines([new Point(0,0), new Point(0,200), new Point(200,200)])
+		path.addLines([new Point(leftPadding,0), new Point(leftPadding,axisMax-bottomPadding), new Point(axisMax-rightPadding,axisMax-bottomPadding)])
 		drawing.addPath(path)
-		var blackWhite = Color.dynamic(new Color('#000000'), new Color('#ffffff'))
+		var axisColor = Color.dynamic(new Color('#000000'), new Color('#ffffff'))
 		drawing.setLineWidth(1)
-		drawing.setStrokeColor(blackWhite)
+		drawing.setStrokeColor(axisColor)
 		drawing.strokePath()
-		var img = drawing.getImage()
-		var graph = graphRow.addImage(img)
+		
+		drawing.setFont(Font.regularRoundedSystemFont(8))
+		drawing.setTextColor(axisColor)
+		drawing.setTextAlignedRight()
+		drawing.drawTextInRect(`${maxY}`, new Rect(0,0,leftPadding-5,8))
+		drawing.drawTextInRect(`${minY}`, new Rect(0,axisMax-bottomPadding-8,leftPadding-5,8))
+		drawing.setTextAlignedCenter()
+		let dateTimeMin = new Date(minX).toLocaleString(Device.locale().replace('_','-')).split(', ')
+		let dateTimeMax = new Date(maxX).toLocaleString(Device.locale().replace('_','-')).split(', ')
+		drawing.drawTextInRect(`${dateTimeMin[0]}`, new Rect(leftPadding-19,axisMax-bottomPadding+8,40,8))
+		drawing.drawTextInRect(`${dateTimeMin[1]}`, new Rect(leftPadding-19,axisMax-bottomPadding+16,40,8))
+		drawing.drawTextInRect(`${dateTimeMax[0]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+8,40,8))
+		drawing.drawTextInRect(`${dateTimeMax[1]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+16,40,8))
+		
+		var graph = graphRow.addImage(drawing.getImage())
 		graphRow.addSpacer()
 			
 		widget.addSpacer()
@@ -378,25 +416,49 @@ var userCache = await igWidget.getJSONFrom(igWidget.profileCachePath)
 if (!userCache || new Date() >= new Date(userCache.last_updated + 60*60*1000)) { console.log('Refreshing user cache'); userCache = await igWidget.fetchData() }
 igWidget.user = userCache
 
-if (!igWidget.images && (config.widgetFamily == 'medium' || config.runsInApp)) {
+if (config.runsInApp) {
+	let a = await showAlert('Show Widget', 'Which widget do you want to show?', ['small', 'medium', 'large'])
+	switch (a) {
+		case 0:
+			config.widgetFamily = 'small'
+			break
+		case 1:
+			config.widgetFamily = 'medium'
+			break
+		case 2:
+			config.widgetFamily = 'large'
+			break
+	}
+}
+
+if (!igWidget.images && config.widgetFamily == 'medium') {
 	igWidget.images = await igWidget.getJSONFrom(igWidget.imageCachePath)
 	if (!igWidget.images) {await igWidget.fetchData()}
 }
 
+switch (config.widgetFamily) {
+	case 'small':
+		var w = await igWidget.createSmallWidget()
+		break
+	case 'medium':
+		var w = await igWidget.createMediumWidget()
+		break
+	case 'large':
+		var w = await igWidget.createLargeWidget()
+		break
+}
+
 if (config.runsInApp) {
-	var w = await igWidget.createMediumWidget()
-	await w.presentMedium()
-} else if (config.runsInWidget) {
 	switch (config.widgetFamily) {
 		case 'small':
-			var w = await igWidget.createSmallWidget()
+			await w.presentSmall()
 			break
 		case 'medium':
-			var w = await igWidget.createMediumWidget()
+			await w.presentMedium()
 			break
 		case 'large':
-			var w = await igWidget.createLargeWidget()
+			await w.presentLarge()
 			break
 	}
-	Script.setWidget(w)
 }
+else if (config.runsInWidget) Script.setWidget(w)
