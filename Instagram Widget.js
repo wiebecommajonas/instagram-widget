@@ -32,9 +32,11 @@ const igWidget = {
 		this.root = this.fm.documentsDirectory() + '/IGWidget'
 		this.cachePath = this.root + '/cache.json'
 		this.profileCachePath = this.root + `/Profiles/${this.username}.cache`
+		this.imageCachePath = this.root + `/Profiles/${this.username}_img.cache`
 		this.logPath = this.root + `/Logs/${this.username}.log`
-		this.user = {}
-		this.sessionid = ''
+		this.images = undefined
+		this.user = undefined
+		this.sessionid = undefined
 	},
 
 	async authorize() {
@@ -66,11 +68,12 @@ const igWidget = {
 	},
 
 	async fetchData() {
-		const url = `https://www.instagram.com/${this.username}/?__a=1`
-		let req = new Request(url)
-		req.headers = {
+		const profileURL = `https://www.instagram.com/${this.username}/?__a=1`
+		let req = new Request(profileURL)
+		let headers = {
 			'Cookie': `sessionid=${this.sessionid}`
 		}
+		req.headers = headers
 		try {
 			var response = await req.loadJSON()
 		} catch (Error) {
@@ -80,6 +83,17 @@ const igWidget = {
 		this.user = response.graphql.user
 		await this.writeJSONTo(this.user, this.profileCachePath)
 		await this.logData()
+		
+		const imageURL = `https://instagram.com/graphql/query/?query_id=17888483320059182&variables=%7B%22id%22:%22${this.user.id}%22,%22first%22:50,%22after%22:null%7D`
+		req = new Request(imageURL)
+		req.headers = headers
+		try {
+			var response = await req.loadJSON()
+		} catch (Error) {
+			throw "Something went wrong. Try deleting the cache."
+		}
+		this.images = response.data.user.edge_owner_to_timeline_media
+		await this.writeJSONTo(this.images, this.imageCachePath)
 		return this.user
 	},
 
@@ -235,16 +249,16 @@ const igWidget = {
 
 	async createMediumWidget() {
 		let widget = new ListWidget()
-		var data = this.getMediaData()
-		var imageCount = data.imageData.length
+		var data = this.images.edges
+		var imageCount = data.length
 		//console.log(imageCount)
 		var randomImages = []
 		var usedIndices = []
 		for (i=0; i < 3; i++) {
 			do {
-				var randomIndex = Math.floor(Math.random() * data.imageData.length)
+				var randomIndex = Math.floor(Math.random() * imageCount)
 			} while (usedIndices.includes(randomIndex) && imageCount > 0)
-			var datum = data.imageData[randomIndex].node
+			var datum = data[randomIndex].node
 			var url = (datum.__typename == "GraphVideo") ? datum.thumbnail_src : datum.display_url
 			//console.log(url)
 			var req = new Request(url)
@@ -261,12 +275,14 @@ const igWidget = {
 		var imagesRow = widget.addStack()
 		imagesRow.layoutHorizontally()
 		imagesRow.addSpacer()
+		let square = (Device.screenSize().height < Device.screenSize().width) ? Device.screenSize().height : Device.screenSize().width
+		square = square/4
 		for (i=0; i < randomImages.length; i++) {
 			var rect = imagesRow.addStack()
-			rect.size = new Size (100,100)
+			rect.size = new Size (square,square)
 			var wImage = rect.addImage(randomImages[i])
 			wImage.applyFillingContentMode()
-			if (i != randomImages.length - 1) {imagesRow.addSpacer(7)}
+			if (i != randomImages.length - 1) {imagesRow.addSpacer()}
 			//wImage.imageSize = new Size(100,100)
 		}
 		imagesRow.addSpacer()
@@ -362,9 +378,14 @@ var userCache = await igWidget.getJSONFrom(igWidget.profileCachePath)
 if (!userCache || new Date() >= new Date(userCache.last_updated + 60*60*1000)) { console.log('Refreshing user cache'); userCache = await igWidget.fetchData() }
 igWidget.user = userCache
 
+if (!igWidget.images && (config.widgetFamily == 'medium' || config.runsInApp)) {
+	igWidget.images = await igWidget.getJSONFrom(igWidget.imageCachePath)
+	if (!igWidget.images) {await igWidget.fetchData()}
+}
+
 if (config.runsInApp) {
-	var w = await igWidget.createLargeWidget()
-	await w.presentLarge()
+	var w = await igWidget.createMediumWidget()
+	await w.presentMedium()
 } else if (config.runsInWidget) {
 	switch (config.widgetFamily) {
 		case 'small':
