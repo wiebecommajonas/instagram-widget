@@ -449,47 +449,6 @@ switch (config.widgetFamily) {
 }
 
 if (config.runsInApp) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-	let a = await showAlert('Show Widget', 'Which widget do you want to show?', ['small', 'medium', 'large'])
-	switch (a) {
-		case 0:
-			config.widgetFamily = 'small'
-			break
-		case 1:
-			config.widgetFamily = 'medium'
-			break
-		case 2:
-			config.widgetFamily = 'large'
-			break
-	}
-}
-
-if (!igWidget.images && config.widgetFamily == 'medium') {
-	igWidget.images = await igWidget.getJSONFrom(igWidget.imageCachePath)
-	if (!igWidget.images) {await igWidget.fetchData()}
-}
-
-switch (config.widgetFamily) {
-	case 'small':
-		var w = await igWidget.createSmallWidget()
-		break
-	case 'medium':
-		var w = await igWidget.createMediumWidget()
-		break
-	case 'large':
-		var w = await igWidget.createLargeWidget()
-		break
-}
-
-if (config.runsInApp) {
-=======
-	var w = await igWidget.createMediumWidget()
-	await w.presentMedium()
-} else if (config.runsInWidget) {
->>>>>>> 3c1e8ee ([changelog:change] Fetch recent 50 pictures instead of 12)
-=======
->>>>>>> 31d871f ([changelog:added] Axis labels on large widget)
 	switch (config.widgetFamily) {
 		case 'small':
 			await w.presentSmall()
