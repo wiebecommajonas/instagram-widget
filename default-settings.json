@@ -1,6 +1,5 @@
 {
 	"Small": {
-		"Thousands separator": ","
 	},
 	"Medium": {
 		"Picture spacing": "auto",
@@ -9,5 +8,8 @@
 	"Large": {
 		"Time range": "last 24h",
 		"Display data": "followers"
+	},
+	"General": {
+		"Thousands separator": ","
 	}
 }
