@@ -48,7 +48,7 @@ As the widgets are updated, the fetched profile data is logged into files (iClou
 ## For anyone who wants to know
 ### Caching
 
-The Instagram Widget is caching your instagram session id cookie, to fetch the profile data. Also any time the data is fetched, it is cached (this is per profile). For example, if you create a small widget with username xy and a medium widget with username yz, there will be one cache file per user. The cache files are updated every hour, to not send to many queries to instagram (if this happens, instagram will temp-block your user).
+The Instagram Widget is caching your instagram session id cookie, to fetch the profile data. Also any time the data is fetched, it is cached (this is per profile). For example, if you create a small widget with username xy and a medium widget with username yz, there will be one cache file per user. The cache files are updated every hour, to not send too many queries to instagram (if this happens, instagram will temp-block your user).
 
 ### Logging
 
