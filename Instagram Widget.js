@@ -416,7 +416,13 @@ var userCache = await igWidget.getJSONFrom(igWidget.profileCachePath)
 if (!userCache || new Date() >= new Date(userCache.last_updated + 60*60*1000)) { console.log('Refreshing user cache'); userCache = await igWidget.fetchData() }
 igWidget.user = userCache
 
+if (!igWidget.images && (config.widgetFamily == 'medium' || config.runsInApp)) {
+	igWidget.images = await igWidget.getJSONFrom(igWidget.imageCachePath)
+	if (!igWidget.images) {await igWidget.fetchData()}
+}
+
 if (config.runsInApp) {
+<<<<<<< HEAD
 	let a = await showAlert('Show Widget', 'Which widget do you want to show?', ['small', 'medium', 'large'])
 	switch (a) {
 		case 0:
@@ -449,6 +455,11 @@ switch (config.widgetFamily) {
 }
 
 if (config.runsInApp) {
+=======
+	var w = await igWidget.createMediumWidget()
+	await w.presentMedium()
+} else if (config.runsInWidget) {
+>>>>>>> 3c1e8ee ([changelog:change] Fetch recent 50 pictures instead of 12)
 	switch (config.widgetFamily) {
 		case 'small':
 			await w.presentSmall()
