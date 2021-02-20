@@ -107,6 +107,44 @@ const igWidget = {
 		await this.writeJSONTo(json, this.settingsPath)
 		return json
 	},
+	
+	async fetchSettingsOptions() {
+		const url = 'https://raw.githubusercontent.com/wiebecommajonas/instagram-widget/master/settings-options.json'
+		let req = new Request(url)
+		let json = await req.loadJSON()
+		return json
+	},
+
+	async editSettings() {
+		var settingsOptions = await this.fetchSettingsOptions()
+		var table = new UITable()
+		for (let category in this.settings) {
+			let row = new UITableRow()
+			row.addText(category)
+			row.dismissOnSelect = false
+			row.onSelect = () => {
+				table.removeAllRows()
+				for (let setting in this.settings[category]) {
+					let row = new UITableRow()
+					row.addText(setting, this.settings[category][setting])
+					row.dismissOnSelect = false
+					row.onSelect = () => {
+						this.updateSetting(category, setting, settingsOptions[category][setting])
+					}
+					table.addRow(row)
+				}
+				table.reload()
+			}
+			table.addRow(row)
+		}
+		await table.present()
+	},
+	
+	async updateSetting(category, setting, options) {
+		let result = options[await showAlert('setting', 'Choose a value for this setting.', options)]
+		this.settings[category][setting] = result
+		await this.writeJSONTo(this.settings, this.settingsPath)
+	}, 
 
 	getProfileInfo() {
 		let result = {
@@ -457,17 +495,15 @@ if (!igWidget.settings) {
 }
 
 if (config.runsInApp) {
-	let a = await showAlert('Show Widget', 'Which widget do you want to show?', ['small', 'medium', 'large'])
-	switch (a) {
-		case 0:
-			config.widgetFamily = 'small'
-			break
-		case 1:
-			config.widgetFamily = 'medium'
-			break
-		case 2:
-			config.widgetFamily = 'large'
-			break
+	
+	let menu = await showAlert('Menu', 'What do you want to do?', ['Edit Preferences','Preview Widget'])
+	
+	if (menu == 0) {
+		await igWidget.editSettings()
+	} else if (menu == 1) {
+		let widgetSizes = ['small', 'medium', 'large']
+		let a = await showAlert('Show Widget', 'Which widget do you want to show?', widgetSizes)
+		config.widgetFamily = widgetSizes[a]
 	}
 }
 
