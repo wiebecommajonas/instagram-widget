@@ -115,25 +115,31 @@ const igWidget = {
 		return json
 	},
 
-	async editSettings() {
+	async editSettingCategory(table, category) {
 		var settingsOptions = await this.fetchSettingsOptions()
+		table.removeAllRows()
+		for (let setting in this.settings[category]) {
+			let row = new UITableRow()
+			row.addText(setting, this.settings[category][setting])
+			row.dismissOnSelect = false
+			row.onSelect = async () => {
+				await this.updateSetting(category, setting, settingsOptions[category][setting])
+				await this.editSettingCategory(table, category)
+			}
+			table.addRow(row)
+		}
+		table.reload()
+	},
+
+	async editSettings() {
 		var table = new UITable()
+		table.showSeparators = true
 		for (let category in this.settings) {
 			let row = new UITableRow()
 			row.addText(category)
 			row.dismissOnSelect = false
-			row.onSelect = () => {
-				table.removeAllRows()
-				for (let setting in this.settings[category]) {
-					let row = new UITableRow()
-					row.addText(setting, this.settings[category][setting])
-					row.dismissOnSelect = false
-					row.onSelect = () => {
-						this.updateSetting(category, setting, settingsOptions[category][setting])
-					}
-					table.addRow(row)
-				}
-				table.reload()
+			row.onSelect = async () => {
+				await this.editSettingCategory(table, category)
 			}
 			table.addRow(row)
 		}
