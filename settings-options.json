@@ -1,0 +1,15 @@
+{
+	"Small": {
+	},
+	"Medium": {
+		"Picture spacing": ["auto"],
+		"Picture geometry": ["square", "original"]
+	},
+	"Large": {
+		"Time range": ["last 24h", "last week", "all time"],
+		"Display data": ["followers", "following", "media_count"]
+	},
+	"General": {
+		"Thousands separator": [",", "."]
+	}
+}
