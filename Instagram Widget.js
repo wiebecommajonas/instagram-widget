@@ -14,6 +14,10 @@ function formatText(text, font) {
 	text.font = font
 }
 
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
 async function showAlert(title, message, options) {
 	let alert = new Alert()
 	alert.title = title
@@ -27,7 +31,7 @@ async function showAlert(title, message, options) {
 const igWidget = {
 	
 	initialize(iCloudInUse = true) {
-		this.username = args.widgetParameter || 'unsplash'
+		this.username = args.widgetParameter || 'jonasweebe'
 		this.fm = iCloudInUse ? FileManager.iCloud() : FileManager.local()
 		this.root = this.fm.documentsDirectory() + '/IGWidget'
 		this.cachePath = this.root + '/cache.json'
@@ -124,6 +128,18 @@ const igWidget = {
 		backButton.onTap = async () => {
 			await this.editSettings(table)
 		}
+		let heading = header.addText(category)
+		backButton.widthWeight = 0.3
+		heading.widthWeight = 0.4
+		heading.titleFont = Font.headline()
+		heading.centerAligned()
+		let saveButton = header.addButton('Save')
+		saveButton.widthWeight = 0.3
+		saveButton.rightAligned()
+		saveButton.dismissOnTap = true
+		saveButton.onTap = async () => {
+			await this.writeJSONTo(this.settings, this.settingsPath)
+		}
 		table.addRow(header)
 		for (let setting in this.settings[category]) {
 			let row = new UITableRow()
@@ -146,6 +162,21 @@ const igWidget = {
 			var table = tableArg
 			table.removeAllRows()
 		}
+		let header = new UITableRow()
+		let spacer = header.addText('')
+		spacer.widthWeight = 0.3
+		let heading = header.addText('Settings')
+		heading.widthWeight = 0.4
+		heading.titleFont = Font.headline()
+		heading.centerAligned()
+		let saveButton = header.addButton('Save')
+		saveButton.widthWeight = 0.3
+		saveButton.rightAligned()
+		saveButton.dismissOnTap = true
+		saveButton.onTap = async () => {
+			await this.writeJSONTo(this.settings, this.settingsPath)
+		}
+		table.addRow(header)
 		for (let category in this.settings) {
 			let row = new UITableRow()
 			row.addText(category)
@@ -162,8 +193,7 @@ const igWidget = {
 	async updateSetting(category, setting, options) {
 		let result = options[await showAlert('setting', 'Choose a value for this setting.', options)]
 		this.settings[category][setting] = result
-		await this.writeJSONTo(this.settings, this.settingsPath)
-	}, 
+	},
 
 	getProfileInfo() {
 		let result = {
@@ -243,7 +273,7 @@ const igWidget = {
 		await this.fm.writeString(this.logPath, JSON.stringify(log))
 	},
 
-	async showJSON() { // for debugging purposes
+	async showJSON() { // for debugging purposes 
 		let table = new UITable()
 		for (let key in this.user) {
 			let row = new UITableRow()
@@ -458,9 +488,11 @@ const igWidget = {
 		var xs = [...xsRaw]
 		var ys = [...ysRaw]
 		
+		let noChanges = ys.filter(onlyUnique).length == 1
+		
 		for (i=0; i < xs.length; i++) { // xs & ys are same length
 			xs[i] = range(minX, maxX, leftPadding, axisMax-rightPadding, xsRaw[i])
-			ys[i] = (minY == maxY) ? 100 : range(minY, maxY, axisMax-bottomPadding, 0, ysRaw[i])
+			ys[i] = (noChanges) ? (axisMax-bottomPadding)/2 : range(minY, maxY, axisMax-bottomPadding, 0, ysRaw[i])
 		}
 		var points = []
 		for (i=0; i < xs.length ; i++) { // xs & ys still same length
@@ -493,15 +525,19 @@ const igWidget = {
 		drawing.setFont(Font.regularRoundedSystemFont(8))
 		drawing.setTextColor(axisColor)
 		drawing.setTextAlignedRight()
-		drawing.drawTextInRect(`${this.formatNumber(maxY)}`, new Rect(0,0,leftPadding-5,8))
-		drawing.drawTextInRect(`${this.formatNumber(minY)}`, new Rect(0,axisMax-bottomPadding-8,leftPadding-5,8))
+		if (noChanges) {
+			drawing.drawTextInRect(`${this.formatNumber(maxY)}`, new Rect(0,(axisMax-bottomPadding)/2 - 4,leftPadding-5,8))
+		} else {
+			drawing.drawTextInRect(`${this.formatNumber(maxY)}`, new Rect(0,0,leftPadding-5,8))
+			drawing.drawTextInRect(`${this.formatNumber(minY)}`, new Rect(0,axisMax-bottomPadding-8,leftPadding-5,8))
+		}
 		drawing.setTextAlignedCenter()
 		let dateTimeMin = new Date(minX).toLocaleString(Device.locale().replace('_','-')).split(', ')
 		let dateTimeMax = new Date(maxX).toLocaleString(Device.locale().replace('_','-')).split(', ')
-		drawing.drawTextInRect(`${dateTimeMin[0]}`, new Rect(leftPadding-19,axisMax-bottomPadding+8,40,8))
-		drawing.drawTextInRect(`${dateTimeMin[1]}`, new Rect(leftPadding-19,axisMax-bottomPadding+16,40,8))
-		drawing.drawTextInRect(`${dateTimeMax[0]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+8,40,8))
-		drawing.drawTextInRect(`${dateTimeMax[1]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+16,40,8))
+		drawing.drawTextInRect(`${dateTimeMin[0]}`, new Rect(leftPadding-19,axisMax-bottomPadding+8,42,8))
+		drawing.drawTextInRect(`${dateTimeMin[1]}`, new Rect(leftPadding-19,axisMax-bottomPadding+16,42,8))
+		drawing.drawTextInRect(`${dateTimeMax[0]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+8,42,8))
+		drawing.drawTextInRect(`${dateTimeMax[1]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+16,42,8))
 		
 		var graph = graphRow.addImage(drawing.getImage())
 		graphRow.addSpacer()
