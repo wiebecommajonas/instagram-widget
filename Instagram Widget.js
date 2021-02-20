@@ -118,6 +118,13 @@ const igWidget = {
 	async editSettingCategory(table, category) {
 		var settingsOptions = await this.fetchSettingsOptions()
 		table.removeAllRows()
+		let header = new UITableRow()
+		let backButton = header.addButton('Back')
+		backButton.dismissOnTap = false
+		backButton.onTap = async () => {
+			await this.editSettings(table)
+		}
+		table.addRow(header)
 		for (let setting in this.settings[category]) {
 			let row = new UITableRow()
 			row.addText(setting, this.settings[category][setting])
@@ -131,9 +138,14 @@ const igWidget = {
 		table.reload()
 	},
 
-	async editSettings() {
-		var table = new UITable()
-		table.showSeparators = true
+	async editSettings(tableArg) {
+		if (!tableArg) {
+			var table = new UITable()
+			table.showSeparators = true
+		} else {
+			var table = tableArg
+			table.removeAllRows()
+		}
 		for (let category in this.settings) {
 			let row = new UITableRow()
 			row.addText(category)
@@ -143,7 +155,8 @@ const igWidget = {
 			}
 			table.addRow(row)
 		}
-		await table.present()
+		if (!tableArg) await table.present()
+		else table.reload()
 	},
 	
 	async updateSetting(category, setting, options) {
