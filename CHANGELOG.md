@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Added
 
 - Settings
+	- Medium widget
+		- Picture spacing
+		- Picture geometry
+	- Large widget
+		- Time range
+		- Display data
+	- General
+		- Thousands separator
 
 ### Changed
 
