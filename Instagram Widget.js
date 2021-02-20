@@ -119,7 +119,7 @@ const igWidget = {
 		var settingsOptions = await this.fetchSettingsOptions()
 		table.removeAllRows()
 		let header = new UITableRow()
-		let backButton = header.addButton('Back')
+		let backButton = header.addButton('< Back')
 		backButton.dismissOnTap = false
 		backButton.onTap = async () => {
 			await this.editSettings(table)
@@ -243,10 +243,9 @@ const igWidget = {
 		await this.fm.writeString(this.logPath, JSON.stringify(log))
 	},
 
-	async showJSON() {
+	async showJSON() { // for debugging purposes
 		let table = new UITable()
 		for (let key in this.user) {
-			//console.log(`${key}: ${this.user[key]}`)
 			let row = new UITableRow()
 			let valueText = row.addText(String(this.user[key]), String(key))
 			table.addRow(row)
@@ -338,7 +337,6 @@ const igWidget = {
 		let widget = new ListWidget()
 		var data = this.images.edges
 		var imageCount = data.length
-		//console.log(imageCount)
 		var randomImages = []
 		var usedIndices = []
 		for (i=0; i < 3; i++) {
@@ -347,7 +345,6 @@ const igWidget = {
 			} while (usedIndices.includes(randomIndex) && imageCount > 0)
 			var datum = data[randomIndex].node
 			var url = (datum.__typename == "GraphVideo") ? datum.thumbnail_src : datum.display_url
-			//console.log(url)
 			var req = new Request(url)
 			req.headers = {
 				'Cookie': `sessionid=${this.session}`
@@ -369,9 +366,26 @@ const igWidget = {
 			if (this.settings.Medium['Picture geometry'] == 'square') rect.size = new Size (square,square)
 			var wImage = rect.addImage(randomImages[i])
 			wImage.applyFillingContentMode()
-			let space = (this.settings.Medium['Picture spacing'] == 'auto') ? null : parseInt(this.settings.Medium['Picture spacing'])
+			let spaceSetting = this.settings.Medium['Picture spacing']
+			let space
+			switch (spaceSetting) {
+				case "auto":
+					space = null
+					break
+				case "none":
+					space = 0
+					break
+				case "narrow":
+					space = 4
+					break
+				case "medium":
+					space = 8
+					break
+				case "wide":
+					space = 15
+					break
+			}
 			if (i != randomImages.length - 1) {imagesRow.addSpacer(space)}
-			//wImage.imageSize = new Size(100,100)
 		}
 		imagesRow.addSpacer()
 		widget.addSpacer()
