@@ -31,7 +31,7 @@ async function showAlert(title, message, options) {
 const igWidget = {
 	
 	initialize(iCloudInUse = true) {
-		this.username = args.widgetParameter || 'jonasweebe'
+		this.username = args.widgetParameter || 'unsplash'
 		this.fm = iCloudInUse ? FileManager.iCloud() : FileManager.local()
 		this.root = this.fm.documentsDirectory() + '/IGWidget'
 		this.cachePath = this.root + '/cache.json'
@@ -218,16 +218,16 @@ const igWidget = {
 	
 	getGraphPadding() {
 		return {
-			1: 10,
-			2: 15,
-			3: 20,
+			1: 20,
+			2: 20,
+			3: 25,
 			4: 30,
 			5: 35,
 			6: 40,
-			7: 40,
-			8: 45,
-			9: 50,
-			10: 55
+			7: 47,
+			8: 53,
+			9: 57,
+			10: 65
 		}
 	},
 	
@@ -480,10 +480,13 @@ const igWidget = {
 		var maxY = Math.max(...ysRaw)
 		var minY = Math.min(...ysRaw)
 		
+		const showLabels = this.settings.Large['Show labels'] == 'true'
+		const FONT_SIZE = 8
 		const axisMax = 300
-		const bottomPadding = 25
-		const rightPadding = 20
-		const leftPadding = this.getGraphPadding()[`${maxY}`.length]
+		const topPadding = 0
+		const bottomPadding = (showLabels) ? 25 : 0
+		const rightPadding = (showLabels) ? 20 : 0
+		const leftPadding = (showLabels) ? this.getGraphPadding()[`${maxY}`.length] : 0
 		
 		var xs = [...xsRaw]
 		var ys = [...ysRaw]
@@ -492,7 +495,7 @@ const igWidget = {
 		
 		for (i=0; i < xs.length; i++) { // xs & ys are same length
 			xs[i] = range(minX, maxX, leftPadding, axisMax-rightPadding, xsRaw[i])
-			ys[i] = (noChanges) ? (axisMax-bottomPadding)/2 : range(minY, maxY, axisMax-bottomPadding, 0, ysRaw[i])
+			ys[i] = (noChanges) ? (axisMax-bottomPadding)/2 : range(minY, maxY, axisMax-bottomPadding, topPadding, ysRaw[i])
 		}
 		var points = []
 		for (i=0; i < xs.length ; i++) { // xs & ys still same length
@@ -515,29 +518,31 @@ const igWidget = {
 		drawing.setLineWidth(0.5)
 		drawing.strokePath()
 		var path = new Path()
-		path.addLines([new Point(leftPadding,0), new Point(leftPadding,axisMax-bottomPadding), new Point(axisMax-rightPadding,axisMax-bottomPadding)])
+		path.addLines([new Point(leftPadding,topPadding), new Point(leftPadding,axisMax-bottomPadding), new Point(axisMax-rightPadding,axisMax-bottomPadding)])
 		drawing.addPath(path)
 		var axisColor = Color.dynamic(new Color('#000000'), new Color('#ffffff'))
 		drawing.setLineWidth(1)
 		drawing.setStrokeColor(axisColor)
 		drawing.strokePath()
 		
-		drawing.setFont(Font.regularRoundedSystemFont(8))
-		drawing.setTextColor(axisColor)
-		drawing.setTextAlignedRight()
-		if (noChanges) {
-			drawing.drawTextInRect(`${this.formatNumber(maxY)}`, new Rect(0,(axisMax-bottomPadding)/2 - 4,leftPadding-5,8))
-		} else {
-			drawing.drawTextInRect(`${this.formatNumber(maxY)}`, new Rect(0,0,leftPadding-5,8))
-			drawing.drawTextInRect(`${this.formatNumber(minY)}`, new Rect(0,axisMax-bottomPadding-8,leftPadding-5,8))
+		if (this.settings.Large['Show labels'] == 'true') {
+			drawing.setFont(Font.regularRoundedSystemFont(FONT_SIZE))
+			drawing.setTextColor(axisColor)
+			drawing.setTextAlignedRight()
+			if (noChanges) {
+				drawing.drawTextInRect(`${this.formatNumber(maxY)}`, new Rect(0,(axisMax-bottomPadding)/2 - FONT_SIZE/2,leftPadding-5,FONT_SIZE))
+			} else {
+				drawing.drawTextInRect(`${this.formatNumber(maxY)}`, new Rect(0,0,leftPadding-5,FONT_SIZE))
+				drawing.drawTextInRect(`${this.formatNumber(minY)}`, new Rect(0,axisMax-bottomPadding-FONT_SIZE,leftPadding-5,FONT_SIZE))
+			}
+			drawing.setTextAlignedCenter()
+			let dateTimeMin = new Date(minX).toLocaleString(Device.locale().replace('_','-')).split(', ')
+			let dateTimeMax = new Date(maxX).toLocaleString(Device.locale().replace('_','-')).split(', ')
+			drawing.drawTextInRect(`${dateTimeMin[0]}`, new Rect(leftPadding-19,axisMax-bottomPadding+FONT_SIZE,42,FONT_SIZE))
+			drawing.drawTextInRect(`${dateTimeMin[1]}`, new Rect(leftPadding-19,axisMax-bottomPadding+FONT_SIZE*2,42,FONT_SIZE))
+			drawing.drawTextInRect(`${dateTimeMax[0]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+FONT_SIZE,42,FONT_SIZE))
+			drawing.drawTextInRect(`${dateTimeMax[1]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+FONT_SIZE*2,42,FONT_SIZE))
 		}
-		drawing.setTextAlignedCenter()
-		let dateTimeMin = new Date(minX).toLocaleString(Device.locale().replace('_','-')).split(', ')
-		let dateTimeMax = new Date(maxX).toLocaleString(Device.locale().replace('_','-')).split(', ')
-		drawing.drawTextInRect(`${dateTimeMin[0]}`, new Rect(leftPadding-19,axisMax-bottomPadding+8,42,8))
-		drawing.drawTextInRect(`${dateTimeMin[1]}`, new Rect(leftPadding-19,axisMax-bottomPadding+16,42,8))
-		drawing.drawTextInRect(`${dateTimeMax[0]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+8,42,8))
-		drawing.drawTextInRect(`${dateTimeMax[1]}`, new Rect(axisMax-rightPadding-21,axisMax-bottomPadding+16,42,8))
 		
 		var graph = graphRow.addImage(drawing.getImage())
 		graphRow.addSpacer()
