@@ -296,10 +296,10 @@ const igWidget = {
 	async createSmallWidget() {
 		let user = this.getProfileInfo()
 		let widget = new ListWidget()
+		widget.url = `https://www.instagram.com/${this.username}`
 		widget.setPadding(13, 0, 13, 0) // top, leading, bottom, trailing
 		var widgetRows = widget.addStack()
 		widgetRows.layoutVertically()
-		widgetRows.url = `https://www.instagram.com/${this.username}`
 		
 		// gackground gradient
 		var gradient = new LinearGradient()
@@ -382,7 +382,11 @@ const igWidget = {
 			var image = await req.loadImage()
 			imageCount--
 			usedIndices.push(randomIndex)
-			randomImages.push(image)
+			let obj = {
+				'image': image,
+				'url': `https://www.instagram.com/p/${datum.shortcode}`
+			}
+			randomImages.push(obj)
 		}
 		
 		widget.addSpacer()
@@ -393,8 +397,9 @@ const igWidget = {
 		square = square/4.3
 		for (i=0; i < randomImages.length; i++) {
 			var rect = imagesRow.addStack()
+			rect.url = randomImages[i].url
 			if (this.settings.Medium['Picture geometry'] == 'square') rect.size = new Size (square,square)
-			var wImage = rect.addImage(randomImages[i])
+			var wImage = rect.addImage(randomImages[i].image)
 			wImage.applyFillingContentMode()
 			let spaceSetting = this.settings.Medium['Picture spacing']
 			let space
@@ -425,6 +430,7 @@ const igWidget = {
 	async createLargeWidget() {
 		let user = this.getProfileInfo()
 		var widget = new ListWidget()
+		widget.url = `https://www.instagram.com/${this.username}`
 		widget.setPadding(13, 0, 13, 0) // top, leading, bottom, trailing
 		var widgetRows = widget.addStack()
 		widgetRows.layoutVertically()
@@ -575,9 +581,9 @@ if (config.runsInApp) {
 	if (menu == 0) {
 		await igWidget.editSettings()
 	} else if (menu == 1) {
-		let widgetSizes = ['small', 'medium', 'large']
+		let widgetSizes = ['Small', 'Medium', 'Large']
 		let a = await showAlert('Show Widget', 'Which widget do you want to show?', widgetSizes)
-		config.widgetFamily = widgetSizes[a]
+		config.widgetFamily = widgetSizes[a].toLowerCase()
 	}
 }
 
