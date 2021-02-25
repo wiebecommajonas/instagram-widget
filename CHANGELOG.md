@@ -10,14 +10,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 - Settings
 	- Medium widget
-		- Picture spacing
-		- Picture geometry
+		- Picture Spacing
+		- Picture Geometry
+		- Open Instagram on Tap
 	- Large widget
-		- Time range
-		- Display data
-		- Show labels
+		- Time Range
+		- Display Data
+		- Show Labels
+		- Open Instagram on Tap
 	- General
-		- Thousands separator
+		- Thousands Separator
+		- Open Instagram on Tap
 - Widget URLs
 
 ### Changed

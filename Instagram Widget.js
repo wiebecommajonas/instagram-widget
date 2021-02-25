@@ -232,7 +232,7 @@ const igWidget = {
 	},
 	
 	formatNumber(number) {
-		return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, this.settings.General['Thousands separator']);
+		return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, this.settings.General['Thousands Separator']);
 	},
 
 	async getJSONFrom(path) {
@@ -296,7 +296,7 @@ const igWidget = {
 	async createSmallWidget() {
 		let user = this.getProfileInfo()
 		let widget = new ListWidget()
-		widget.url = `https://www.instagram.com/${this.username}`
+		if (this.settings.Small['Open Instagram on Tap'] == 'true') widget.url = `https://www.instagram.com/${this.username}`
 		widget.setPadding(13, 0, 13, 0) // top, leading, bottom, trailing
 		var widgetRows = widget.addStack()
 		widgetRows.layoutVertically()
@@ -397,11 +397,11 @@ const igWidget = {
 		square = square/4.3
 		for (i=0; i < randomImages.length; i++) {
 			var rect = imagesRow.addStack()
-			rect.url = randomImages[i].url
-			if (this.settings.Medium['Picture geometry'] == 'square') rect.size = new Size (square,square)
+			if (this.settings.Medium['Open Instagram on Tap'] == 'true') rect.url = randomImages[i].url
+			if (this.settings.Medium['Picture Geometry'] == 'square') rect.size = new Size (square,square)
 			var wImage = rect.addImage(randomImages[i].image)
 			wImage.applyFillingContentMode()
-			let spaceSetting = this.settings.Medium['Picture spacing']
+			let spaceSetting = this.settings.Medium['Picture Spacing']
 			let space
 			switch (spaceSetting) {
 				case "auto":
@@ -430,7 +430,7 @@ const igWidget = {
 	async createLargeWidget() {
 		let user = this.getProfileInfo()
 		var widget = new ListWidget()
-		widget.url = `https://www.instagram.com/${this.username}`
+		if (this.settings.Large['Open Instagram on Tap'] == 'true') widget.url = `https://www.instagram.com/${this.username}`
 		widget.setPadding(13, 0, 13, 0) // top, leading, bottom, trailing
 		var widgetRows = widget.addStack()
 		widgetRows.layoutVertically()
@@ -447,7 +447,7 @@ const igWidget = {
 			image.cornerRadius = 12
 			usernameRow.addSpacer(3)
 		}
-		let dataPoint = this.settings.Large['Display data']
+		let dataPoint = this.settings.Large['Display Data']
 		let label = (dataPoint == 'media_count') ? 'Media count' : dataPoint.replace(/^\w/, (c) => c.toUpperCase())
 		var usernameText = usernameRow.addText(`${user.username} | ${label}`)
 		usernameText.font = Font.boldRoundedSystemFont(12)
@@ -459,7 +459,7 @@ const igWidget = {
 		var xsRaw = []
 		var ysRaw = []
 		let timeRange
-		switch (this.settings.Large['Time range']) {
+		switch (this.settings.Large['Time Range']) {
 			case 'last 24h':
 				timeRange = 24
 				break
@@ -486,7 +486,7 @@ const igWidget = {
 		var maxY = Math.max(...ysRaw)
 		var minY = Math.min(...ysRaw)
 		
-		const showLabels = this.settings.Large['Show labels'] == 'true'
+		const showLabels = this.settings.Large['Show Labels'] == 'true'
 		const FONT_SIZE = 8
 		const axisMax = 300
 		const topPadding = 0
@@ -531,7 +531,7 @@ const igWidget = {
 		drawing.setStrokeColor(axisColor)
 		drawing.strokePath()
 		
-		if (this.settings.Large['Show labels'] == 'true') {
+		if (this.settings.Large['Show Labels'] == 'true') {
 			drawing.setFont(Font.regularRoundedSystemFont(FONT_SIZE))
 			drawing.setTextColor(axisColor)
 			drawing.setTextAlignedRight()

@@ -1,18 +1,21 @@
 {
 	"Small": {
-		"Display data": ""
+		"Display Data": "",
+		"Open Instagram on Tap": "false"
 	},
 	"Medium": {
-		"Picture size": "auto",
-		"Picture spacing": "auto",
-		"Picture geometry": "square"
+		"Picture Size": "auto",
+		"Picture Spacing": "auto",
+		"Picture Geometry": "square",
+		"Open Instagram on Tap": "false"
 	},
 	"Large": {
-		"Time range": "last 24h",
-		"Display data": "followers",
-		"Show labels": "true"
+		"Time Range": "last 24h",
+		"Display Data": "followers",
+		"Show Labels": "true",
+		"Open Instagram on Tap": "false"
 	},
 	"General": {
-		"Thousands separator": ","
+		"Thousands Separator": ","
 	}
 }

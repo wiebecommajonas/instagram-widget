@@ -1,16 +1,19 @@
 {
 	"Small": {
+		"Open Instagram on Tap": ["true", "false"]
 	},
 	"Medium": {
-		"Picture spacing": ["auto", "none", "narrow", "medium", "wide"],
-		"Picture geometry": ["square", "original"]
+		"Picture Spacing": ["auto", "none", "narrow", "medium", "wide"],
+		"Picture Geometry": ["square", "original"],
+		"Open Instagram on Tap": ["true", "false"]
 	},
 	"Large": {
-		"Time range": ["last 24h", "last week", "all time"],
-		"Display data": ["followers", "following", "media_count"],
-		"Show labels": ["true", "false"]
+		"Time Range": ["last 24h", "last week", "all time"],
+		"Display Data": ["followers", "following", "media_count"],
+		"Show Labels": ["true", "false"],
+		"Open Instagram on Tap": ["true", "false"]
 	},
 	"General": {
-		"Thousands separator": [",", "."]
+		"Thousands Separator": [",", "."]
 	}
 }
