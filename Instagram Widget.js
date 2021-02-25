@@ -605,7 +605,6 @@ if (config.runsInApp) {
 			let javascript = await req.loadString()
 			await igWidget.fm.writeString(module.filename, javascript)
 			let settingsBackupPath = igWidget.root + '/' + igWidget.fm.fileName(igWidget.settingsPath, false) + '-backup.json'
-			console.log(settingsBackupPath)
 			if (igWidget.fm.fileExists(settingsBackupPath)) {
 				await igWidget.fm.remove(settingsBackupPath)
 			}
@@ -615,7 +614,11 @@ if (config.runsInApp) {
 			let newDefaultSettings = await req.loadJSON()
 			let newSettings = {...newDefaultSettings, ...igWidget.settings}
 			await igWidget.fm.writeString(igWidget.settingsPath, JSON.stringify(newSettings))
-			await showAlert('Update', 'The update is finished.' ['Ok'])
+			url = `https://github.com/wiebecommajonas/instagram-widget/blob/${response[0].name}/CHANGELOG.md`
+			let webview = new WebView()
+			await webview.loadURL(url)
+			await webview.present(false)
+			await showAlert('Update', 'The update is finished.', ['Ok'])
 		}
 	}
 }
