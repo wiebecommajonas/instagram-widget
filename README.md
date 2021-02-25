@@ -2,11 +2,10 @@
 
 With the Instagram Widget you can customise your homescreen to show your profile status, your favourite pictures or the growth of a profile. You will find a few [examples](#examples) below.
 
-## Instructions
-
+## Installation
 To get this widget to work copy the contents of [Instagram Widget.js](Instagram%20Widget.js), create a new widget in Scriptable and paste the copied code. Then add a Scriptable widget to your home screen (all sizes are supported, check the [examples](#examples) to find which size suits your needs).
 
-<img src="img/instructions.jpg" width="300">
+<img src="img/instructions.jpg" width="600">
 
 After adding the widget to your homescreen you will have to set the script and the widget parameter. The script has to be the one you caopied all the code into and the parameter needs to be a valid instagram username.
 
@@ -17,13 +16,16 @@ After adding the widget to your homescreen you will have to set the script and t
 * The widget parameter can be any username, but only a private user if you follow then with the account you're logging in with
 * Have fun :)
 
+## Settings
+To edit the settings, run the script inside the app. You can now choose whether you want to edit your preferences, update the script, or preview a widget. When you are finished editing the settings, make sure to save them by tapping the save button (top right corner). If the window is closed without saving, the settings are not updated.
+
 ## Examples
 ### Small Widget
 ```
 parameter = username
 ```
 
-<img src="img/small.PNG" width="300">
+<img src="img/small.PNG" width="600">
 
 The small widget is for viewing current followers and media count.
 
@@ -32,7 +34,7 @@ The small widget is for viewing current followers and media count.
 parameter = username
 ```
 
-<img src="img/medium.PNG" width="300">
+<img src="img/medium.PNG" width="600">
 
 The medium widget shows random recent pictures.
 
@@ -52,7 +54,7 @@ The Instagram Widget is caching your instagram session id cookie, to fetch the p
 
 ### Logging
 
-Every time the user data is renewed three main data points are logged (this also happens per user):
+Every time the user data is renewed, three main data points are logged (this also happens per user):
 
 * follower count
 * following count

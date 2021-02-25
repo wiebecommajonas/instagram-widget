@@ -31,6 +31,7 @@ async function showAlert(title, message, options) {
 const igWidget = {
 	
 	initialize(iCloudInUse = true) {
+		this.version = 'v0.1.0'
 		this.username = args.widgetParameter || 'unsplash'
 		this.fm = iCloudInUse ? FileManager.iCloud() : FileManager.local()
 		this.root = this.fm.documentsDirectory() + '/IGWidget'
@@ -576,14 +577,46 @@ if (!igWidget.settings) {
 
 if (config.runsInApp) {
 	
-	let menu = await showAlert('Menu', 'What do you want to do?', ['Edit Preferences','Preview Widget'])
+	let menu = await showAlert('Menu', 'What do you want to do?', ['Edit Preferences','Preview Widget', 'Update'])
 	
-	if (menu == 0) {
+	if (menu == 0) { // Preferences
 		await igWidget.editSettings()
-	} else if (menu == 1) {
+	} else if (menu == 1) { // Preview Widget
 		let widgetSizes = ['Small', 'Medium', 'Large']
 		let a = await showAlert('Show Widget', 'Which widget do you want to show?', widgetSizes)
 		config.widgetFamily = widgetSizes[a].toLowerCase()
+	} else if (menu == 2) { // Update
+		let currentPath = module.filename
+		let url = 'https://api.github.com/repos/wiebecommajonas/instagram-widget/tags'
+		let req = new Request(url)
+		let response = await req.loadJSON()
+		if (false && response[0].name == igWidget.version) {
+			await showAlert('Update', 'Your Script is up to date.', ['Ok'])
+		} else {
+			await showAlert('Update', `Updating script to ${response[0].name}. The current script will be backed up.`, ['Continue'])
+			let backupFilename = igWidget.fm.fileName(module.filename, false) + ' Backup.js'
+			let backupFilepath = igWidget.fm.documentsDirectory() + '/' + backupFilename
+			if (igWidget.fm.fileExists(backupFilepath)) {
+				await igWidget.fm.remove(backupFilepath)
+			}
+			await igWidget.fm.copy(module.filename, backupFilepath)
+			let url = `https://raw.githubusercontent.com/wiebecommajonas/instagram-widget/${response[0].name}/Instagram%20Widget.js`
+			let req = new Request(url)
+			let javascript = await req.loadString()
+			await igWidget.fm.writeString(module.filename, javascript)
+			let settingsBackupPath = igWidget.root + '/' + igWidget.fm.fileName(igWidget.settingsPath, false) + '-backup.json'
+			console.log(settingsBackupPath)
+			if (igWidget.fm.fileExists(settingsBackupPath)) {
+				await igWidget.fm.remove(settingsBackupPath)
+			}
+			await igWidget.fm.copy(igWidget.settingsPath, settingsBackupPath)
+			url = `https://raw.githubusercontent.com/wiebecommajonas/instagram-widget/${response[0].name}/default-settings.json`
+			req = new Request(url)
+			let newDefaultSettings = await req.loadJSON()
+			let newSettings = {...newDefaultSettings, ...igWidget.settings}
+			await igWidget.fm.writeString(igWidget.settingsPath, JSON.stringify(newSettings))
+			await showAlert('Update', 'The update is finished.' ['Ok'])
+		}
 	}
 }
 
