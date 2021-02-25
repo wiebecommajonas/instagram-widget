@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Added
 
 - Settings
+	- Small widget
+		- Open Instagram on Tap
 	- Medium widget
 		- Picture Spacing
 		- Picture Geometry
@@ -20,7 +22,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 		- Open Instagram on Tap
 	- General
 		- Thousands Separator
-		- Open Instagram on Tap
 - Widget URLs
 
 ### Changed
