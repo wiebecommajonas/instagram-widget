@@ -31,7 +31,7 @@ async function showAlert(title, message, options) {
 const igWidget = {
 	
 	initialize(iCloudInUse = true) {
-		this.version = 'v0.1.0'
+		this.version = 'v1.0.0' // Don't change this
 		this.username = args.widgetParameter || 'unsplash'
 		this.fm = iCloudInUse ? FileManager.iCloud() : FileManager.local()
 		this.root = this.fm.documentsDirectory() + '/IGWidget'
