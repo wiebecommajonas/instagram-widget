@@ -590,7 +590,7 @@ if (config.runsInApp) {
 		let url = 'https://api.github.com/repos/wiebecommajonas/instagram-widget/tags'
 		let req = new Request(url)
 		let response = await req.loadJSON()
-		if (false && response[0].name == igWidget.version) {
+		if (response[0].name == igWidget.version) {
 			await showAlert('Update', 'Your Script is up to date.', ['Ok'])
 		} else {
 			await showAlert('Update', `Updating script to ${response[0].name}. The current script will be backed up.`, ['Continue'])
