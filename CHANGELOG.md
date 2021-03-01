@@ -42,5 +42,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Large widget with change of followers over time
 
 [Unreleased]: https://github.com/wiebecommajonas/instgram-widget/compare/v0.1.0...HEAD
-[1.0.0]: https://github.com/wiebecommajonas/instgram-widget/compare/v0.1.0...v1.0.0
+[1.0.0]: https://github.com/wiebecommajonas/instagram-widget/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/wiebecommajonas/instagram-widget/releases/tag/v0.1.0
