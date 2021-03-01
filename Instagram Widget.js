@@ -104,6 +104,26 @@ const igWidget = {
 		return this.user
 	},
 	
+	async preview(size) {
+		if (!size) {size = 'small'}
+		let w
+		switch (size) {
+			case 'small':
+			case 'general':
+				w = await this.createSmallWidget()
+				await w.presentSmall()
+				break
+			case 'medium':
+				w = await this.createMediumWidget()
+				await w.presentMedium()
+				break
+			case 'large':
+				w = await this.createLargeWidget()
+				await w.presentLarge()
+				break
+		}
+	},
+	
 	async fetchDefaultSettings() {
 		const url = 'https://raw.githubusercontent.com/wiebecommajonas/instagram-widget/master/default-settings.json'
 		let req = new Request(url)
@@ -125,21 +145,28 @@ const igWidget = {
 		table.removeAllRows()
 		let header = new UITableRow()
 		let backButton = header.addButton('< Back')
+		backButton.widthWeight = 30
 		backButton.dismissOnTap = false
 		backButton.onTap = async () => {
 			await this.editSettings(table)
 		}
 		let heading = header.addText(category)
-		backButton.widthWeight = 0.3
-		heading.widthWeight = 0.4
+		heading.widthWeight = 40
 		heading.titleFont = Font.headline()
 		heading.centerAligned()
 		let saveButton = header.addButton('Save')
-		saveButton.widthWeight = 0.3
+		saveButton.widthWeight = 15
 		saveButton.rightAligned()
 		saveButton.dismissOnTap = true
 		saveButton.onTap = async () => {
 			await this.writeJSONTo(this.settings, this.settingsPath)
+		}
+		let previewButton = header.addButton('Preview')
+		previewButton.widthWeight = 15
+		previewButton.rightAligned()
+		previewButton.dismissOnTap = false
+		previewButton.onTap = async () => {
+			await this.preview(category.toLowerCase())
 		}
 		table.addRow(header)
 		for (let setting in this.settings[category]) {
@@ -365,6 +392,8 @@ const igWidget = {
 	},
 
 	async createMediumWidget() {
+		this.images = await this.getJSONFrom(this.imageCachePath)
+		if (!this.images) await this.fetchData()
 		let widget = new ListWidget()
 		var data = this.images.edges
 		var imageCount = data.length
@@ -577,14 +606,14 @@ if (!igWidget.settings) {
 
 if (config.runsInApp) {
 	
-	let menu = await showAlert('Menu', 'What do you want to do?', ['Edit Preferences','Preview Widget', 'Update'])
+	let menu = await showAlert('Menu', 'What do you want to do?', ['Edit Preferences','Preview Widget', 'Update', 'Exit'])
 	
 	if (menu == 0) { // Preferences
 		await igWidget.editSettings()
 	} else if (menu == 1) { // Preview Widget
 		let widgetSizes = ['Small', 'Medium', 'Large']
 		let a = await showAlert('Show Widget', 'Which widget do you want to show?', widgetSizes)
-		config.widgetFamily = widgetSizes[a].toLowerCase()
+		await igWidget.preview(widgetSizes[a].toLowerCase())
 	} else if (menu == 2) { // Update
 		let currentPath = module.filename
 		let url = 'https://api.github.com/repos/wiebecommajonas/instagram-widget/tags'
@@ -620,37 +649,23 @@ if (config.runsInApp) {
 			await webview.present(false)
 			await showAlert('Update', 'The update is finished.', ['Ok'])
 		}
+	} else if (menu == 3) { // Exit: do nothing
+		// doing nothing
 	}
 }
 
-if (!igWidget.images && config.widgetFamily == 'medium') {
-	igWidget.images = await igWidget.getJSONFrom(igWidget.imageCachePath)
-	if (!igWidget.images) {await igWidget.fetchData()}
-}
-
-switch (config.widgetFamily) {
-	case 'small':
-		var w = await igWidget.createSmallWidget()
-		break
-	case 'medium':
-		var w = await igWidget.createMediumWidget()
-		break
-	case 'large':
-		var w = await igWidget.createLargeWidget()
-		break
-}
-
-if (config.runsInApp) {
+if (config.runsInWidget) {
+	let w
 	switch (config.widgetFamily) {
 		case 'small':
-			await w.presentSmall()
+			w = await igWidget.createSmallWidget()
 			break
 		case 'medium':
-			await w.presentMedium()
+			w = await igWidget.createMediumWidget()
 			break
 		case 'large':
-			await w.presentLarge()
+			w = await igWidget.createLargeWidget()
 			break
 	}
+	Script.setWidget(w)
 }
-else if (config.runsInWidget) Script.setWidget(w)
